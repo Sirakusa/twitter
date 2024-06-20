@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { handleGetData } from "./util/postTweet";
 import ModalIcon from "./util/modalIcons";
 
@@ -12,15 +12,40 @@ import {
   PhotoIcon,
 } from "@heroicons/react/24/outline";
 
+import Cookies from "js-cookie";
+
+import { jwtDecode } from "jwt-decode";
+
+interface User {
+  image: string;
+  name: string;
+  nickname: string;
+  id: string;
+}
+
 export default function TweetBox() {
   const [input, setInput] = useState<string>("");
+  const [user, setUser] = useState<User>();
+
+  useEffect(() => {
+    const userDocument = Cookies.get("user");
+
+    if (userDocument) {
+      try {
+        const parsedUser: User = jwtDecode(userDocument);
+        setUser(parsedUser);
+      } catch (e) {
+        alert(e);
+      }
+    }
+  }, []);
 
   return (
     <div className="flex space-x-2 p-5">
       <picture>
         <img
           className="mt-4 h-14 w-14 rounded-full object-cover"
-          src="https://th.bing.com/th/id/R.f6507346b17ed9cff1986bfbe26e8b03?rik=l3T0YCjGehm0GQ&pid=ImgRaw&r=0"
+          src={user?.image}
           alt="user"
         />
       </picture>
@@ -50,7 +75,7 @@ export default function TweetBox() {
               disabled={!input}
               onClick={() =>
                 handleGetData({
-                  user: "12413dc",
+                  user: user?.id,
                   description: input,
                   media:
                     "https://www.aceprensa.com/wp-content/uploads/2023/07/oppenheimer.jpg",

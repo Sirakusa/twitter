@@ -55,7 +55,7 @@ export default function ModalIcon({ Icon, title }: Props) {
             type="button"
             onClick={handleClose}
             className="rounded-full bg-black px-5 py-2 font-bold text-white mt-4">
-            Close
+            accept
           </button>
         </Box>
       </Modal>
